@@ -1,7 +1,7 @@
 /** @module UnsplashApi */
 export default class UnsplashApi {
     _linkAPI = 'https://api.unsplash.com{method}?{query}';
-    _methodUrl = {
+    _methodsUrl = {
         randomPhotos : '/photos/random'
     }
     _defaultParamsConnection = {
@@ -42,11 +42,11 @@ export default class UnsplashApi {
          * */
         // Отправляем запросы на сервер
         const requestsArray = arrayNameCar.map(car => {
-            const currentUrl = this.generateCurrentUrl('randomPhotos', {
+            const currentUrl = this._generateCurrentUrl('randomPhotos', {
                 query: car
             });
 
-            return this.fetchAPI(currentUrl, this._defaultParamsConnection)
+            return this._fetchAPI(currentUrl, this._defaultParamsConnection)
         })
         const resolveArray = await Promise.allSettled(requestsArray);
 
@@ -64,7 +64,7 @@ export default class UnsplashApi {
      * @param {Object} paramsConnection - Параммеры для отправки запроса
      * @return {Promise} Промис для обработки запроса
      * */
-    async fetchAPI(url, paramsConnection) {
+    async _fetchAPI(url, paramsConnection) {
         const response = await fetch(url, paramsConnection);
         const data = await response.json();
 
@@ -79,15 +79,15 @@ export default class UnsplashApi {
      * @param {Object} queryObject - Данные для парраметров запроса
      * @return {String} Готовый url адресс, для отправки запроса
      * */
-    generateCurrentUrl(method, queryObject) {
+    _generateCurrentUrl(method, queryObject) {
         const currentUrl = this._linkAPI
             .replaceAll(this._regMaskUrl, value => {
                 switch (value) {
                     case '{method}':
-                        return this._methodUrl[method]
+                        return this._methodsUrl[method]
                         break;
                     case '{query}':
-                        return this.generateParamsUrl(queryObject);
+                        return this._generateParamsUrl(queryObject);
                         break;
                 }
             });
@@ -102,7 +102,7 @@ export default class UnsplashApi {
      * @param {Object} objectParams - Объект параметров
      * @return {String} Строку параметров в виде url запроса
      * */
-    generateParamsUrl(objectParams) {
+    _generateParamsUrl(objectParams) {
         let result = new URLSearchParams(objectParams);
 
         return result.toString();

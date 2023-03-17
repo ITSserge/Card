@@ -11,7 +11,7 @@ export default class InitCard {
     constructor(container) {
         this._container = document.querySelector(container);
 
-        this._container.addEventListener('click', this.handleSlideClick.bind(this))
+        this._container.addEventListener('click', this._handleSlideClick.bind(this))
     }
 
     /**
@@ -20,12 +20,12 @@ export default class InitCard {
      * @this {InitCard}
      * @param {Object} event - Объект ивента
      * */
-    handleSlideClick(event) {
+    _handleSlideClick(event) {
         const currentSlide = event.target.closest('.slide');
         if(!currentSlide) throw new Error('Не найден слайд')
 
-        this.addClass(currentSlide);
-        this.removeClass(currentSlide);
+        this._addClass(currentSlide);
+        this._removeClass(currentSlide);
     }
 
     /**
@@ -34,7 +34,7 @@ export default class InitCard {
      * @this {InitCard}
      * @param {Object} currentSlide - Активный слайд
      * */
-    removeClass(currentSlide) {
+    _removeClass(currentSlide) {
         const slides = this._container.children;
 
         [...slides].forEach(slide => {
@@ -48,7 +48,7 @@ export default class InitCard {
      * @this {InitCard}
      * @param {Object} currentSlide - Активный слайд
      * */
-    addClass(currentSlide) {
+    _addClass(currentSlide) {
         if(!currentSlide.classList.contains('active')) { // Если у слайда нет класса active
             currentSlide.classList.add('active');
             return;

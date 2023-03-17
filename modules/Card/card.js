@@ -4,7 +4,7 @@ import InitCard from "./initCard.js";
 import UnsplashApi from "./API/unsplashAPI.js";
 
 export default class Card {
-    _arrayNameCar = ['BMB', 'Tesla', 'Audi', 'Mazda', 'Ferrari'];
+    _arrayDefaultNameCar = ['BMB', 'Tesla', 'Audi', 'Mazda', 'Ferrari'];
     _isRandomPhoto = false;
     _markupCard = `
     <div class="slide" style="background-image: url('{URLToImage}')">
@@ -26,7 +26,7 @@ export default class Card {
         if(paramsObject.isRandomPhoto || this._isRandomPhoto) {
             this.unsplashAPI = new UnsplashApi(paramsObject.apiKey)
 
-            if(paramsObject.arrayNameCar) this._arrayNameCar = paramsObject.arrayNameCar;
+            if(paramsObject.arrayNameCar) this._arrayDefaultNameCar = paramsObject.arrayNameCar;
 
             this.init();
         }
@@ -41,7 +41,7 @@ export default class Card {
         // Очищаем галерею
         this.initCard._container.innerHTML = '';
 
-        const arrayImage = await this.unsplashAPI.getRandPhotos(this._arrayNameCar)
+        const arrayImage = await this.unsplashAPI.getRandPhotos(this._arrayDefaultNameCar)
         this.setSlides(arrayImage);
     }
 
@@ -55,10 +55,10 @@ export default class Card {
         let iterator = 0;
 
         arrayImage.forEach(image => {
-            const nameCar = this._arrayNameCar[iterator];
+            const nameCar = this._arrayDefaultNameCar[iterator];
             const imageSrc = image.urls.regular;
 
-            this.initCard._container.innerHTML += this.generateMarkupSlide(nameCar, imageSrc);
+            this.initCard._container.innerHTML += this._generateMarkupSlide(nameCar, imageSrc);
 
             iterator++;
         })
@@ -72,7 +72,7 @@ export default class Card {
      * @param {String} imageSrc - Ссылка на картинку
      * @return {String} Строку html слайда
      * */
-    generateMarkupSlide (nameCar, imageSrc) {
+    _generateMarkupSlide (nameCar, imageSrc) {
         return this._markupCard.replaceAll(this._regMaskSlide, id => {
             switch (id) {
                 case '{URLToImage}':
