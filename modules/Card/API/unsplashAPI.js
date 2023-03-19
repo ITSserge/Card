@@ -1,4 +1,5 @@
 /** @module UnsplashApi */
+
 export default class UnsplashApi {
     _linkAPI = 'https://api.unsplash.com{method}?{query}';
     _methodsUrl = {

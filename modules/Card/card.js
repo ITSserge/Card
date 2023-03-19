@@ -4,8 +4,11 @@ import InitCard from "./initCard.js";
 import UnsplashApi from "./API/unsplashAPI.js";
 
 export default class Card {
-    _arrayDefaultNameCar = ['BMB', 'Tesla', 'Audi', 'Mazda', 'Ferrari'];
-    _isRandomPhoto = false;
+    _paramsObject = {
+        _isRandomPhoto: false,
+        isClearContainer: true,
+        arrayNameCar: ['BMB', 'Tesla', 'Audi', 'Mazda', 'Ferrari']
+    };
     _markupCard = `
     <div class="slide" style="background-image: url('{URLToImage}')">
         <h3>{NameCar}</h3>
@@ -23,10 +26,13 @@ export default class Card {
     constructor(container, paramsObject) {
         this.initCard = new InitCard(container);
 
+        // Мерджим парамметры у класса
+        Object.assign(this._paramsObject, paramsObject);
+
         if(paramsObject.isRandomPhoto || this._isRandomPhoto) {
             this.unsplashAPI = new UnsplashApi(paramsObject.apiKey)
 
-            if(paramsObject.arrayNameCar) this._arrayDefaultNameCar = paramsObject.arrayNameCar;
+            if(paramsObject.arrayNameCar) this._paramsObject.arrayNameCar = paramsObject.arrayNameCar;
 
             this.init();
         }
@@ -39,9 +45,11 @@ export default class Card {
      * */
     async init() {
         // Очищаем галерею
-        this.initCard._container.innerHTML = '';
+        if(this._paramsObject.isClearContainer) {
+            this.initCard._container.innerHTML = '';
+        }
 
-        const arrayImage = await this.unsplashAPI.getRandPhotos(this._arrayDefaultNameCar)
+        const arrayImage = await this.unsplashAPI.getRandPhotos(this._paramsObject.arrayNameCar)
         this.setSlides(arrayImage);
     }
 
@@ -55,7 +63,7 @@ export default class Card {
         let iterator = 0;
 
         arrayImage.forEach(image => {
-            const nameCar = this._arrayDefaultNameCar[iterator];
+            const nameCar = this._paramsObject.arrayNameCar[iterator];
             const imageSrc = image.urls.regular;
 
             this.initCard._container.innerHTML += this._generateMarkupSlide(nameCar, imageSrc);
